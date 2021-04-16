@@ -11,31 +11,18 @@
 	"engines": {
 		"vscode": "^1.55.0"
 	},
+	"categories": [
+		"Other"
+	],
 	"activationEvents": [
 		"onLanguage:dart"
 	],
 	"main": "./out/extension.js",
 	"icon": "assets/icon.png",
-	"categories": [
-		"Programming Languages",
-		"Other"
-	  ],
-	  "keywords": [
-		"vscode",
-		"flutter",
-		"dart",
-		"dto",
-		"data",
-		"transfer",
-		"object",
-		"json",
-		"domain",
-		"fromJson",
-		"toJson"
-	  ],
-	"author": "Luis Utrera",
-	"license": "MIT",
-	  "scripts": {
+	"contributes": {
+		
+	},
+	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
