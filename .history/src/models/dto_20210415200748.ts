@@ -20,7 +20,6 @@ export default class Dto {
     this.annotations = annotations;
   }
   public static fromString(documentContent: String): Dto {
-    console.log("fromstring");
     const args = this.argumentsFromString(documentContent);
     const name = this.getName(documentContent);
     const annotations = this.classAnnotationsFromString(documentContent);
@@ -38,25 +37,10 @@ export default class Dto {
   private static getName(documentContent: String): String {
     const nameRegex = /(?<=class\s+).*?(?= {)/;
     const matchingElements = documentContent.match(nameRegex);
-
     const name = matchingElements === null ? "" : matchingElements[0];
     return name;
   }
   public toDartCode(): String {
-    console.log(`
-    class ${this.name}{
-      const ${this.name}._({${toConstructorFromArgumentsList(this.arguments)}});
-      ${toDeclarationFromArgumentsList(this.arguments)} 
-    
-      ${this.generateFromJson()}
-    
-      ${this.generateToJson()}
-    
-      ${this.generateFromDomain()}
-    
-      ${this.generateToDomain()}
-    }
-        `);
     return `
 class ${this.name}{
   const ${this.name}._({${toConstructorFromArgumentsList(this.arguments)}});

@@ -27,15 +27,15 @@ export default class DtoGenerator implements vscode.CodeActionProvider {
       vscode.CodeActionKind.QuickFix
     );
     fix.edit = new vscode.WorkspaceEdit();
-
+    console.log("before dartcode");
     const dartCode =
       Dto.fromString(document.getText())?.toDartCode() ?? document.getText();
-
+    console.log("after dartcode");
     const startLine = this.getLineToBeginReplacing(document);
     fix.edit.replace(
       document.uri,
       new vscode.Range(
-        new vscode.Position(startLine, 0),
+        new vscode.Position(startLine + 1, 0),
         new vscode.Position(100, 0)
       ),
       dartCode.toString()

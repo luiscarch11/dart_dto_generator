@@ -10,10 +10,10 @@ class Dto {
         this.annotations = annotations;
     }
     static fromString(documentContent) {
+        console.log("fromstring");
         const args = this.argumentsFromString(documentContent);
         const name = this.getName(documentContent);
         const annotations = this.classAnnotationsFromString(documentContent);
-        console.log(name);
         return new Dto(name, args, annotations);
     }
     static classAnnotationsFromString(documentContent) {
@@ -28,6 +28,20 @@ class Dto {
         return name;
     }
     toDartCode() {
+        console.log(`
+    class ${this.name}{
+      const ${this.name}._({${arguments_extension_1.toConstructorFromArgumentsList(this.arguments)}});
+      ${arguments_extension_1.toDeclarationFromArgumentsList(this.arguments)} 
+    
+      ${this.generateFromJson()}
+    
+      ${this.generateToJson()}
+    
+      ${this.generateFromDomain()}
+    
+      ${this.generateToDomain()}
+    }
+        `);
         return `
 class ${this.name}{
   const ${this.name}._({${arguments_extension_1.toConstructorFromArgumentsList(this.arguments)}});
@@ -86,11 +100,9 @@ static ${this.name} fromDomain(${domainName} domain){
       `;
     }
     static argumentsFromString(constructorString) {
-        console.log("argumentsFromString");
         const argumentsRegex = /(((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,})(?=;))/g;
         //const argumentsRegex = /(?<=final )(([\w]){1,} {1,1}([\w]){1,})(?=;)/g;
         const matchingArguments = constructorString.match(argumentsRegex);
-        console.log("gotten matching arguments");
         if (matchingArguments === null || matchingArguments.length === 0) {
             return [];
         }
@@ -100,7 +112,6 @@ static ${this.name} fromDomain(${domainName} domain){
             const splitArgument = cleanArgument.split(" ");
             const regexAnnotations = /(@[\w]+\([\w]+\))(?=(\s*\r*(@[\w]+\([\w]+\))\s*\r*)*)/g;
             const annotations = annotation_1.default.annotationsListFromRegexMatches(cleanArgument.match(regexAnnotations));
-            console.log(`annotation: ${annotations}`);
             return new argument_1.default(splitArgument[splitArgument.length - 2], splitArgument[splitArgument.length - 1], annotations);
         });
     }

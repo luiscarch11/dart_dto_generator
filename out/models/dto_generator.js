@@ -4,6 +4,7 @@ const vscode = require("vscode");
 const dto_1 = require("./dto");
 class DtoGenerator {
     provideCodeActions(document, range, context, token) {
+        console.log("provideCodeActions");
         const dtoClassGenerate = this.createFix(document, range);
         return [dtoClassGenerate];
     }
@@ -13,7 +14,7 @@ class DtoGenerator {
         fix.edit = new vscode.WorkspaceEdit();
         const dartCode = (_b = (_a = dto_1.default.fromString(document.getText())) === null || _a === void 0 ? void 0 : _a.toDartCode()) !== null && _b !== void 0 ? _b : document.getText();
         const startLine = this.getLineToBeginReplacing(document);
-        fix.edit.replace(document.uri, new vscode.Range(new vscode.Position(startLine + 1, 0), new vscode.Position(100, 0)), dartCode.toString());
+        fix.edit.replace(document.uri, new vscode.Range(new vscode.Position(startLine, 0), new vscode.Position(100, 0)), dartCode.toString());
         return fix;
     }
     getLineToBeginReplacing(document) {
@@ -23,7 +24,7 @@ class DtoGenerator {
             let lineText = document.lineAt(lineNumber);
             let imports = lineText.text.match(/import/g);
             if (imports) {
-                lineToReturn = lineNumber;
+                lineToReturn = lineNumber + 1;
             }
         }
         return lineToReturn;

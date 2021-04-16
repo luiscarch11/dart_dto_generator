@@ -20,7 +20,6 @@ export default class Dto {
     this.annotations = annotations;
   }
   public static fromString(documentContent: String): Dto {
-    console.log("fromstring");
     const args = this.argumentsFromString(documentContent);
     const name = this.getName(documentContent);
     const annotations = this.classAnnotationsFromString(documentContent);
@@ -38,7 +37,6 @@ export default class Dto {
   private static getName(documentContent: String): String {
     const nameRegex = /(?<=class\s+).*?(?= {)/;
     const matchingElements = documentContent.match(nameRegex);
-
     const name = matchingElements === null ? "" : matchingElements[0];
     return name;
   }

@@ -20,7 +20,6 @@ export default class Dto {
     this.annotations = annotations;
   }
   public static fromString(documentContent: String): Dto {
-    console.log("fromstring");
     const args = this.argumentsFromString(documentContent);
     const name = this.getName(documentContent);
     const annotations = this.classAnnotationsFromString(documentContent);

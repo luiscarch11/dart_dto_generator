@@ -8,7 +8,6 @@ export default class DtoGenerator implements vscode.CodeActionProvider {
     context: vscode.CodeActionContext,
     token: vscode.CancellationToken
   ): vscode.ProviderResult<vscode.CodeAction[]> {
-    console.log("provideCodeActions");
     const dtoClassGenerate = this.createFix(document, range);
 
     return [dtoClassGenerate];
@@ -27,15 +26,15 @@ export default class DtoGenerator implements vscode.CodeActionProvider {
       vscode.CodeActionKind.QuickFix
     );
     fix.edit = new vscode.WorkspaceEdit();
-
+    console.log("before dartcode");
     const dartCode =
       Dto.fromString(document.getText())?.toDartCode() ?? document.getText();
-
+    console.log("after dartcode");
     const startLine = this.getLineToBeginReplacing(document);
     fix.edit.replace(
       document.uri,
       new vscode.Range(
-        new vscode.Position(startLine, 0),
+        new vscode.Position(startLine + 1, 0),
         new vscode.Position(100, 0)
       ),
       dartCode.toString()
@@ -51,7 +50,7 @@ export default class DtoGenerator implements vscode.CodeActionProvider {
       let lineText = document.lineAt(lineNumber);
       let imports = lineText.text.match(/import/g);
       if (imports) {
-        lineToReturn = lineNumber + 1;
+        lineToReturn = lineNumber;
       }
     }
     return lineToReturn;
