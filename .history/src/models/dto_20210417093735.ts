@@ -33,7 +33,7 @@ export default class Dto {
     return new Dto(name, args, annotations);
   }
   private static shouldShowCommand(documentContent: String): boolean {
-    const regex = /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
+    const regex = /((@[\w]+\([\w]+\))\s*)*(((@[\w]+\([\w]+\))\s*)*(class [\w]+\s*{\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,});\s*}))/g;
     const matches = documentContent.match(regex);
     return matches === null ? false : matches.length > 0;
   }

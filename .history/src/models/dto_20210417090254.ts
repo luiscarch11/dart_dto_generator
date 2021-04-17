@@ -19,23 +19,13 @@ export default class Dto {
     this.arguments = args;
     this.annotations = annotations;
   }
-  public static fromString(documentContent: String): Dto | null {
+  public static fromString(documentContent: String): Dto {
+    console.log("fromstring");
     const args = this.argumentsFromString(documentContent);
     const name = this.getName(documentContent);
     const annotations = this.classAnnotationsFromString(documentContent);
 
-    if (args.length === 0 || name === null) {
-      return null;
-    }
-    if (!this.shouldShowCommand(documentContent)) {
-      return null;
-    }
     return new Dto(name, args, annotations);
-  }
-  private static shouldShowCommand(documentContent: String): boolean {
-    const regex = /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
-    const matches = documentContent.match(regex);
-    return matches === null ? false : matches.length > 0;
   }
   private static classAnnotationsFromString(
     documentContent: String
@@ -45,11 +35,11 @@ export default class Dto {
 
     return Annotation.annotationsListFromRegexMatches(argumentsString);
   }
-  private static getName(documentContent: String): String | null {
+  private static getName(documentContent: String): String {
     const nameRegex = /(?<=class\s+).*?(?= {)/;
     const matchingElements = documentContent.match(nameRegex);
 
-    const name = matchingElements === null ? null : matchingElements[0];
+    const name = matchingElements === null ? "" : matchingElements[0];
     return name;
   }
   public toDartCode(): String | null {

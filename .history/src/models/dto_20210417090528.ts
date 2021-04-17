@@ -23,19 +23,7 @@ export default class Dto {
     const args = this.argumentsFromString(documentContent);
     const name = this.getName(documentContent);
     const annotations = this.classAnnotationsFromString(documentContent);
-
-    if (args.length === 0 || name === null) {
-      return null;
-    }
-    if (!this.shouldShowCommand(documentContent)) {
-      return null;
-    }
-    return new Dto(name, args, annotations);
-  }
-  private static shouldShowCommand(documentContent: String): boolean {
-    const regex = /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
-    const matches = documentContent.match(regex);
-    return matches === null ? false : matches.length > 0;
+    if (args.length === 0 || name) return new Dto(name, args, annotations);
   }
   private static classAnnotationsFromString(
     documentContent: String

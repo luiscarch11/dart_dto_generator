@@ -10,11 +10,21 @@ class Dto {
         this.annotations = annotations;
     }
     static fromString(documentContent) {
-        console.log("fromstring");
         const args = this.argumentsFromString(documentContent);
         const name = this.getName(documentContent);
         const annotations = this.classAnnotationsFromString(documentContent);
+        if (args.length === 0 || name === null) {
+            return null;
+        }
+        if (!this.shouldShowCommand(documentContent)) {
+            return null;
+        }
         return new Dto(name, args, annotations);
+    }
+    static shouldShowCommand(documentContent) {
+        const regex = /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
+        const matches = documentContent.match(regex);
+        return matches === null ? false : matches.length > 0;
     }
     static classAnnotationsFromString(documentContent) {
         const regex = /(@[\w]+\([\w]+\))\s*(?=((@[\w]+\([\w]+\))\s*)*(class [\w]+\s*\{(.*[\s]*)*}))/g;
@@ -24,24 +34,10 @@ class Dto {
     static getName(documentContent) {
         const nameRegex = /(?<=class\s+).*?(?= {)/;
         const matchingElements = documentContent.match(nameRegex);
-        const name = matchingElements === null ? "" : matchingElements[0];
+        const name = matchingElements === null ? null : matchingElements[0];
         return name;
     }
     toDartCode() {
-        console.log(`
-    class ${this.name}{
-      const ${this.name}._({${arguments_extension_1.toConstructorFromArgumentsList(this.arguments)}});
-      ${arguments_extension_1.toDeclarationFromArgumentsList(this.arguments)} 
-    
-      ${this.generateFromJson()}
-    
-      ${this.generateToJson()}
-    
-      ${this.generateFromDomain()}
-    
-      ${this.generateToDomain()}
-    }
-        `);
         return `
 class ${this.name}{
   const ${this.name}._({${arguments_extension_1.toConstructorFromArgumentsList(this.arguments)}});

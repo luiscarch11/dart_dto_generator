@@ -10,7 +10,7 @@ export default class DtoGenerator implements vscode.CodeActionProvider {
   ): vscode.ProviderResult<vscode.CodeAction[]> {
     const dtoClassGenerate = this.createFix(document, range);
 
-    return dtoClassGenerate === null ? dtoClassGenerate : [dtoClassGenerate];
+    return [dtoClassGenerate];
   }
 
   public static readonly providedCodeActionKinds = [
@@ -20,17 +20,16 @@ export default class DtoGenerator implements vscode.CodeActionProvider {
   private createFix(
     document: vscode.TextDocument,
     range: vscode.Range
-  ): vscode.CodeAction | null {
+  ): vscode.CodeAction {
     const fix = new vscode.CodeAction(
       `Generate Data Transfer Object`,
       vscode.CodeActionKind.QuickFix
     );
     fix.edit = new vscode.WorkspaceEdit();
-    const documentText = document.getText();
-    const dartCode = Dto.fromString(documentText)?.toDartCode() ?? documentText;
-    if (dartCode === documentText) {
-      return null;
-    }
+
+    const dartCode =
+      Dto.fromString(document.getText())?.toDartCode() ?? document.getText();
+
     const startLine = this.getLineToBeginReplacing(document);
     fix.edit.replace(
       document.uri,
