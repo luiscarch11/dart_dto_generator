@@ -7,7 +7,7 @@
 		"type": "git",
 		"url": "https://github.com/luiscarch11/dart_dto_generator"
 	},
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.55.0"
 	},
@@ -19,8 +19,8 @@
 	"categories": [
 		"Programming Languages",
 		"Other"
-	  ],
-	  "keywords": [
+	],
+	"keywords": [
 		"vscode",
 		"flutter",
 		"dart",
@@ -32,10 +32,10 @@
 		"domain",
 		"fromJson",
 		"toJson"
-	  ],
+	],
 	"author": "Luis Utrera",
 	"license": "MIT",
-	  "scripts": {
+	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
