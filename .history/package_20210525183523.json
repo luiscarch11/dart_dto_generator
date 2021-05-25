@@ -1,29 +1,43 @@
 {
 	"name": "dart-dto-generator",
 	"displayName": "Dart DTO Generator",
-	"description": "",
-	"version": "0.0.1",
+	"description": "Tired of writting messy code when building Data Transfer Objects in Dart? Here's the solution.",
+	"publisher": "Luiscarch11",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/luiscarch11/dart_dto_generator"
+	},
+	"version": "0.0.4",
 	"engines": {
 		"vscode": "^1.55.0"
 	},
-	"categories": [
-		"Other"
-	],
 	"activationEvents": [
 		"onLanguage:dart"
 	],
 	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "dart-dto-generator.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
+	"icon": "assets/icon.png",
+	"categories": [
+		"Programming Languages",
+		"Other"
+	],
+	"keywords": [
+		"vscode",
+		"flutter",
+		"dart",
+		"dto",
+		"data",
+		"transfer",
+		"object",
+		"json",
+		"domain",
+		"fromJson",
+		"toJson"
+	],
+	"author": "Luis Utrera",
+	"license": "MIT",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "d",
+		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
