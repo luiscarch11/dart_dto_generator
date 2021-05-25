@@ -19,43 +19,42 @@ export default class Dto {
     this.arguments = args;
     this.annotations = annotations;
   }
-  public static fromString(documentContent: String): Dto {
+  public static fromString(documentContent: String): Dto | null {
     const args = this.argumentsFromString(documentContent);
     const name = this.getName(documentContent);
     const annotations = this.classAnnotationsFromString(documentContent);
 
+    if (args.length === 0 || name === null) {
+      return null;
+    }
+    if (!this.shouldShowCommand(documentContent)) {
+      return null;
+    }
     return new Dto(name, args, annotations);
+  }
+  private static shouldShowCommand(documentContent: String): boolean {
+    const regex =
+      /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w](<[\w]{1,}>)*){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
+    const matches = documentContent.match(regex);
+    return matches === null ? false : matches.length > 0;
   }
   private static classAnnotationsFromString(
     documentContent: String
   ): Array<Annotation> {
-    const regex = /(@[\w]+\([\w]+\))\s*(?=((@[\w]+\([\w]+\))\s*)*(class [\w]+\s*\{(.*[\s]*)*}))/g;
+    const regex =
+      /(@[\w]+\([\w]+\))\s*(?=((@[\w]+\([\w]+\))\s*)*(class [\w]+\s*\{(.*[\s]*)*}))/g;
     const argumentsString = documentContent.match(regex);
 
     return Annotation.annotationsListFromRegexMatches(argumentsString);
   }
-  private static getName(documentContent: String): String {
+  private static getName(documentContent: String): String | null {
     const nameRegex = /(?<=class\s+).*?(?= {)/;
     const matchingElements = documentContent.match(nameRegex);
 
-    const name = matchingElements === null ? "" : matchingElements[0];
+    const name = matchingElements === null ? null : matchingElements[0];
     return name;
   }
-  public toDartCode(): String {
-    console.log(`
-    class ${this.name}{
-      const ${this.name}._({${toConstructorFromArgumentsList(this.arguments)}});
-      ${toDeclarationFromArgumentsList(this.arguments)} 
-    
-      ${this.generateFromJson()}
-    
-      ${this.generateToJson()}
-    
-      ${this.generateFromDomain()}
-    
-      ${this.generateToDomain()}
-    }
-        `);
+  public toDartCode(): String | null {
     return `
 class ${this.name}{
   const ${this.name}._({${toConstructorFromArgumentsList(this.arguments)}});
@@ -118,7 +117,8 @@ static ${this.name} fromDomain(${domainName} domain){
   private static argumentsFromString(
     constructorString: String
   ): Array<Argument> {
-    const argumentsRegex = /(((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,})(?=;))/g;
+    const argumentsRegex =
+      /(((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w](<[\w]{1,}>)*){1,} {1,1}([\w]){1,})(?=;))/g;
     //const argumentsRegex = /(?<=final )(([\w]){1,} {1,1}([\w]){1,})(?=;)/g;
     const matchingArguments = constructorString.match(argumentsRegex);
 
@@ -130,7 +130,8 @@ static ${this.name} fromDomain(${domainName} domain){
     return argumentsList.map((arg) => {
       const cleanArgument = arg.trim();
       const splitArgument = cleanArgument.split(" ");
-      const regexAnnotations = /(@[\w]+\([\w]+\))(?=(\s*\r*(@[\w]+\([\w]+\))\s*\r*)*)/g;
+      const regexAnnotations =
+        /(@[\w]+\([\w]+\))(?=(\s*\r*(@[\w]+\([\w]+\))\s*\r*)*)/g;
       const annotations = Annotation.annotationsListFromRegexMatches(
         cleanArgument.match(regexAnnotations)
       );

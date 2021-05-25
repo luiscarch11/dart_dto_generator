@@ -22,7 +22,7 @@ class Dto {
         return new Dto(name, args, annotations);
     }
     static shouldShowCommand(documentContent) {
-        const regex = /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
+        const regex = /((@[\w]+\([\w]+\))\s*\r*)*(((@[\w]+\([\w]+\))\s*\r*)*(class [\w]+\s*\r*{(\r*\s*((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w](<[\w]{1,}>)*){1,} {1,1}([\w]){1,});)*\s*\r*}))/g;
         const matches = documentContent.match(regex);
         return matches === null ? false : matches.length > 0;
     }
@@ -32,7 +32,7 @@ class Dto {
         return annotation_1.default.annotationsListFromRegexMatches(argumentsString);
     }
     static getName(documentContent) {
-        const nameRegex = /(?<=class\s+).*?(?= {)/;
+        const nameRegex = /(?<=class\s+).*?(?=\s*{)/;
         const matchingElements = documentContent.match(nameRegex);
         const name = matchingElements === null ? null : matchingElements[0];
         return name;
@@ -96,7 +96,7 @@ static ${this.name} fromDomain(${domainName} domain){
       `;
     }
     static argumentsFromString(constructorString) {
-        const argumentsRegex = /(((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w]){1,} {1,1}([\w]){1,})(?=;))/g;
+        const argumentsRegex = /(((@[\w]+\([\w]+\))\s*\r*)*(final )(([\w](<[\w]{1,}>)*){1,} {1,1}([\w]){1,})(?=;))/g;
         //const argumentsRegex = /(?<=final )(([\w]){1,} {1,1}([\w]){1,})(?=;)/g;
         const matchingArguments = constructorString.match(argumentsRegex);
         if (matchingArguments === null || matchingArguments.length === 0) {
