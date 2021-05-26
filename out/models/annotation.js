@@ -42,7 +42,7 @@ class Annotation {
         }
     }
     static getName(value) {
-        const regex = /((?<=@)[\w]+(?=\([\w]+\)))/;
+        const regex = /((?<=@)[\w]+(?=\(([\w]*(.[\w]+)*)\)))/;
         const match = value.match(regex);
         if (match === null) {
             return null;
