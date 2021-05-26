@@ -3,14 +3,14 @@ export default abstract class Annotation {
   abstract name: String;
   constructor() {}
 
-  public static argumentsListFromRegexMatches(
+  public static annotationsListFromRegexMatches(
     matches: RegExpMatchArray | null
   ): Array<Annotation> {
     if (matches === null) {
       return [];
     }
     const matchesToArgument = matches.map((match) => this.fromString(match));
-    if (!matchesToArgument.includes(null)) {
+    if (matchesToArgument.includes(null)) {
       return [];
     }
     return matchesToArgument as Array<Annotation>;
@@ -35,8 +35,14 @@ export default abstract class Annotation {
       case "toJson": {
         return this.toJson(value);
       }
+      case "toDomain": {
+        return this.toDomain(value);
+      }
       case "domainName": {
         return this.domainName(value);
+      }
+      case "jsonName": {
+        return this.jsonName(value);
       }
       default:
         return null;
@@ -44,7 +50,7 @@ export default abstract class Annotation {
   }
 
   private static getName(value: String): String | null {
-    const regex = /((?<=@)[\w]+(?=\([\w]+\)))/;
+    const regex = /((?<=@)[\w]+(?=\(([\w]*(.[\w]+)*)\)))/;
     const match = value.match(regex);
     if (match === null) {
       return null;
@@ -59,19 +65,27 @@ export default abstract class Annotation {
     }
     return match[0];
   }
-  private static fromJson(value: String): Annotation {
+  public static fromJson(value: String): Annotation {
     return new AnnotationFromJson(value);
   }
-  private static toJson(value: String): Annotation {
+  public static toJson(value: String): Annotation {
     return new AnnotationToJson(value);
   }
-  private static domainName(value: String): Annotation {
+  public static domainName(value: String): Annotation {
     return new AnnotationDomainName(value);
+  }
+  public static jsonName(value: String): Annotation {
+    return new AnnotationJsonName(value);
+  }
+  public static toDomain(value: String): Annotation {
+    return new AnnotationToDomain(value);
   }
   public map<T>({
     fromJson,
     toJson,
     domainName,
+    jsonName,
+    toDomain,
   }: AnnotationTypesInterface<T>): any {
     if ((this.name = "fromJson")) {
       return fromJson();
@@ -79,8 +93,14 @@ export default abstract class Annotation {
     if ((this.name = "toJson")) {
       return toJson();
     }
+    if ((this.name = "toDomain")) {
+      return toDomain();
+    }
     if ((this.name = "domainName")) {
       return domainName();
+    }
+    if ((this.name = "jsonName")) {
+      return jsonName();
     }
     return fromJson();
   }
@@ -89,6 +109,8 @@ interface AnnotationTypesInterface<T> {
   fromJson: () => T;
   toJson: () => T;
   domainName: () => T;
+  jsonName: () => T;
+  toDomain: () => T;
 }
 class AnnotationFromJson extends Annotation {
   value: String;
@@ -99,12 +121,30 @@ class AnnotationFromJson extends Annotation {
     this.value = value;
   }
 }
+class AnnotationJsonName extends Annotation {
+  value: String;
+  name: String;
+  constructor(value: String) {
+    super();
+    this.name = "jsonName";
+    this.value = value;
+  }
+}
 class AnnotationToJson extends Annotation {
   value: String;
   name: String;
   constructor(value: String) {
     super();
     this.name = "toJson";
+    this.value = value;
+  }
+}
+class AnnotationToDomain extends Annotation {
+  value: String;
+  name: String;
+  constructor(value: String) {
+    super();
+    this.name = "toDomain";
     this.value = value;
   }
 }

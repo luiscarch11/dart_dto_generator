@@ -50,7 +50,7 @@ export default abstract class Annotation {
   }
 
   private static getName(value: String): String | null {
-    const regex = /((?<=@)[\w]+(?=\([\w]+\)))/;
+    const regex = /((?<=@)[\w]+(?=\(([\w]*(.[\w]+)*)\)))/;
     const match = value.match(regex);
     if (match === null) {
       return null;
